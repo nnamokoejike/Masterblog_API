@@ -41,11 +41,6 @@ body {
     margin-right: 10px;
 }
 
-.input-field input {
-    flex-grow: 1;
-    margin-right: 10px;
-}
-
 .input-field input::placeholder {
     color: #aaa;
 }
