@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -10,28 +12,43 @@ CORS(app)  # This will enable Cors for all routes
 # ]
 
 
+# POSTS = [
+#     {"id": 1, "title": "The Importance of Good Sleep",
+#      "content": "Quality sleep is essential for maintaining physical and mental health."},
+#     {"id": 2, "title": "How to Stay Productive While Working From Home",
+#      "content": "Remote work can be challenging, but with the right habits, you can stay productive."},
+#     {"id": 3, "title": "The Rise of Electric Vehicles",
+#      "content": "Electric vehicles are becoming more popular as sustainable alternatives to traditional cars."},
+#     {"id": 4, "title": "Benefits of a Plant-Based Diet",
+#      "content": "Switching to a plant-based diet has numerous health benefits, including better digestion."},
+#     {"id": 5, "title": "How to Create a Personal Budget",
+#      "content": "A well-planned budget helps you manage your money effectively and save for the future."},
+#     {"id": 6, "title": "Top 5 Destinations for Adventure Travel",
+#      "content": "Explore some of the most exciting places in the world for adventure and thrill-seekers."},
+#     {"id": 7, "title": "The Future of Artificial Intelligence",
+#      "content": "AI is transforming industries, and its potential applications are virtually limitless."},
+#     {"id": 8, "title": "Simple Ways to Reduce Stress",
+#      "content": "Reducing stress is important for a balanced life; try meditation or exercise to ease tension."},
+#     {"id": 9, "title": "The Ultimate Guide to Remote Collaboration Tools",
+#      "content": "Remote teams can stay connected and efficient using tools like Slack and Zoom."},
+#     {"id": 10, "title": "How to Improve Your Fitness Routine",
+#      "content": "Small changes in your fitness routine can make a big difference in your overall health."}
+# ]
+
 POSTS = [
     {"id": 1, "title": "The Importance of Good Sleep",
-     "content": "Quality sleep is essential for maintaining physical and mental health."},
+     "content": "Quality sleep is essential for maintaining physical and mental health.", "author": "Alice Smith",
+     "date": "2024-10-01"},
     {"id": 2, "title": "How to Stay Productive While Working From Home",
-     "content": "Remote work can be challenging, but with the right habits, you can stay productive."},
-    {"id": 3, "title": "The Rise of Electric Vehicles",
-     "content": "Electric vehicles are becoming more popular as sustainable alternatives to traditional cars."},
-    {"id": 4, "title": "Benefits of a Plant-Based Diet",
-     "content": "Switching to a plant-based diet has numerous health benefits, including better digestion."},
-    {"id": 5, "title": "How to Create a Personal Budget",
-     "content": "A well-planned budget helps you manage your money effectively and save for the future."},
-    {"id": 6, "title": "Top 5 Destinations for Adventure Travel",
-     "content": "Explore some of the most exciting places in the world for adventure and thrill-seekers."},
-    {"id": 7, "title": "The Future of Artificial Intelligence",
-     "content": "AI is transforming industries, and its potential applications are virtually limitless."},
-    {"id": 8, "title": "Simple Ways to Reduce Stress",
-     "content": "Reducing stress is important for a balanced life; try meditation or exercise to ease tension."},
-    {"id": 9, "title": "The Ultimate Guide to Remote Collaboration Tools",
-     "content": "Remote teams can stay connected and efficient using tools like Slack and Zoom."},
-    {"id": 10, "title": "How to Improve Your Fitness Routine",
-     "content": "Small changes in your fitness routine can make a big difference in your overall health."}
+     "content": "Remote work can be challenging, but with the right habits, you can stay productive.",
+     "author": "Bob Johnson", "date": "2024-10-02"},
+    # Add more posts as needed...
 ]
+
+
+# Helper function to generate the current date in the format "YYY-MM-DD"
+def get_current_date():
+    return datetime.datetime.now().strftime('%Y-%m-%d')
 
 
 def find_post_by_id(post_id):
@@ -68,8 +85,8 @@ def get_posts():
     direction = request.args.get('direction', 'asc')  # Get the direction query parameter (default is asc)
 
     # Validate sort field
-    if sort_by and sort_by not in ['title', 'content']:
-        return jsonify({"Error": "Invalid sort field. Must be 'title' or 'content'"}), 400
+    if sort_by and sort_by not in ['title', 'content', 'author', 'date']:
+        return jsonify({"Error": "Invalid sort field. Must be 'title' or 'content' or 'author' or 'date'"}), 400
 
     # Validate sort direction
     if direction not in ['asc', 'desc']:
@@ -90,12 +107,16 @@ def search_posts():
     # Get the query parameters
     search_title = request.args.get('title')
     search_content = request.args.get('content')
+    search_author = request.args.get('author')
+    search_date = request.args.get('date')
 
     # Filter the posts based on the search parameters
     results = []
     for post in POSTS:
         if (search_title and search_title.lower() in post['title'].lower()) or \
-                (search_content and search_content.lower() in post['content'].lower()):
+                (search_content and search_content.lower() in post['content'].lower()) or \
+                (search_author and search_author.lower() in post['author'].lower()) or \
+                (search_date and search_date == post['date']):
             results.append(post)
 
     # Return the filtered list of posts
@@ -117,7 +138,9 @@ def add_post():
     new_post = {
         'id': new_id,
         'title': data['title'],
-        'content': data['content']
+        'content': data['content'],
+        'author': data['author'],
+        'date': get_current_date()   # Automatically set the current date
     }
 
     # Add the new post to the list
@@ -159,8 +182,12 @@ def update_post(id):
 
     if 'title' in new_data:
         post['title'] = new_data['title']
-    elif 'content' in new_data:
+    if 'content' in new_data:
         post['content'] = new_data['content']
+    if 'author' in new_data:
+        post['author'] = new_data['author']
+    if 'date' in new_data:
+        post['date'] = new_data['date']
 
     return jsonify(POSTS)
 
