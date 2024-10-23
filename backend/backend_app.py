@@ -10,45 +10,6 @@ CORS(app)  # This will enable Cors for all routes
 POSTS_FILE = 'posts.json'
 
 
-# POSTS = [
-#     {"id": 1, "title": "First post", "content": "This is the first post."},
-#     {"id": 2, "title": "Second post", "content": "This is the second post."}
-# ]
-
-
-# POSTS = [
-#     {"id": 1, "title": "The Importance of Good Sleep",
-#      "content": "Quality sleep is essential for maintaining physical and mental health."},
-#     {"id": 2, "title": "How to Stay Productive While Working From Home",
-#      "content": "Remote work can be challenging, but with the right habits, you can stay productive."},
-#     {"id": 3, "title": "The Rise of Electric Vehicles",
-#      "content": "Electric vehicles are becoming more popular as sustainable alternatives to traditional cars."},
-#     {"id": 4, "title": "Benefits of a Plant-Based Diet",
-#      "content": "Switching to a plant-based diet has numerous health benefits, including better digestion."},
-#     {"id": 5, "title": "How to Create a Personal Budget",
-#      "content": "A well-planned budget helps you manage your money effectively and save for the future."},
-#     {"id": 6, "title": "Top 5 Destinations for Adventure Travel",
-#      "content": "Explore some of the most exciting places in the world for adventure and thrill-seekers."},
-#     {"id": 7, "title": "The Future of Artificial Intelligence",
-#      "content": "AI is transforming industries, and its potential applications are virtually limitless."},
-#     {"id": 8, "title": "Simple Ways to Reduce Stress",
-#      "content": "Reducing stress is important for a balanced life; try meditation or exercise to ease tension."},
-#     {"id": 9, "title": "The Ultimate Guide to Remote Collaboration Tools",
-#      "content": "Remote teams can stay connected and efficient using tools like Slack and Zoom."},
-#     {"id": 10, "title": "How to Improve Your Fitness Routine",
-#      "content": "Small changes in your fitness routine can make a big difference in your overall health."}
-# ]
-
-# POSTS = [
-#     {"id": 1, "title": "The Importance of Good Sleep",
-#      "content": "Quality sleep is essential for maintaining physical and mental health.", "author": "Alice Smith",
-#      "date": "2024-10-01"},
-#     {"id": 2, "title": "How to Stay Productive While Working From Home",
-#      "content": "Remote work can be challenging, but with the right habits, you can stay productive.",
-#      "author": "Bob Johnson", "date": "2024-10-02"},
-#     # Add more posts as needed...
-# ]
-
 # Helper function to read posts from JSON file
 def read_posts_from_file():
     if not os.path.exists(POSTS_FILE):
