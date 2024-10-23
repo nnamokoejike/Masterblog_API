@@ -4,9 +4,33 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  # This will enable Cors for all routes
 
+# POSTS = [
+#     {"id": 1, "title": "First post", "content": "This is the first post."},
+#     {"id": 2, "title": "Second post", "content": "This is the second post."}
+# ]
+
+
 POSTS = [
-    {"id": 1, "title": "First post", "content": "This is the first post."},
-    {"id": 2, "title": "Second post", "content": "This is the second post."}
+    {"id": 1, "title": "The Importance of Good Sleep",
+     "content": "Quality sleep is essential for maintaining physical and mental health."},
+    {"id": 2, "title": "How to Stay Productive While Working From Home",
+     "content": "Remote work can be challenging, but with the right habits, you can stay productive."},
+    {"id": 3, "title": "The Rise of Electric Vehicles",
+     "content": "Electric vehicles are becoming more popular as sustainable alternatives to traditional cars."},
+    {"id": 4, "title": "Benefits of a Plant-Based Diet",
+     "content": "Switching to a plant-based diet has numerous health benefits, including better digestion."},
+    {"id": 5, "title": "How to Create a Personal Budget",
+     "content": "A well-planned budget helps you manage your money effectively and save for the future."},
+    {"id": 6, "title": "Top 5 Destinations for Adventure Travel",
+     "content": "Explore some of the most exciting places in the world for adventure and thrill-seekers."},
+    {"id": 7, "title": "The Future of Artificial Intelligence",
+     "content": "AI is transforming industries, and its potential applications are virtually limitless."},
+    {"id": 8, "title": "Simple Ways to Reduce Stress",
+     "content": "Reducing stress is important for a balanced life; try meditation or exercise to ease tension."},
+    {"id": 9, "title": "The Ultimate Guide to Remote Collaboration Tools",
+     "content": "Remote teams can stay connected and efficient using tools like Slack and Zoom."},
+    {"id": 10, "title": "How to Improve Your Fitness Routine",
+     "content": "Small changes in your fitness routine can make a big difference in your overall health."}
 ]
 
 
@@ -37,9 +61,45 @@ def method_not_allowed_error(error):
     return jsonify({"error": "Method Not Allowed"}), 405
 
 
+# "List" endpoint - Return the list of all posts, with optionL SORTING
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
+    sort_by = request.args.get('sort')  # Get the sort query parameter
+    direction = request.args.get('direction', 'asc')  # Get the direction query parameter (default is asc)
+
+    # Validate sort field
+    if sort_by and sort_by not in ['title', 'content']:
+        return jsonify({"Error": "Invalid sort field. Must be 'title' or 'content'"}), 400
+
+    # Validate sort direction
+    if direction not in ['asc', 'desc']:
+        return jsonify({"Error": "Invalid sort direction. Must be 'asc' or 'desc'"}), 400
+
+    # If sorting is requested
+    if sort_by:
+        reverse_order = True if direction == 'desc' else False
+        sorted_posts = sorted(POSTS, key=lambda x: x[sort_by].lower(), reverse=reverse_order)
+        return jsonify(sorted_posts)
+    # If no sorting, return the original list
     return jsonify(POSTS)
+
+
+# Search endpoint - Allows searching posts by title or content
+@app.route('/api/posts/search', methods=['GET'])
+def search_posts():
+    # Get the query parameters
+    search_title = request.args.get('title')
+    search_content = request.args.get('content')
+
+    # Filter the posts based on the search parameters
+    results = []
+    for post in POSTS:
+        if (search_title and search_title.lower() in post['title'].lower()) or \
+                (search_content and search_content.lower() in post['content'].lower()):
+            results.append(post)
+
+    # Return the filtered list of posts
+    return jsonify(results)
 
 
 @app.route('/api/posts', methods=['POST'])
@@ -82,6 +142,27 @@ def delete_post(id):
 
     # Return the deleted post
     return jsonify({"Message": f"Post with id {id} has been deleted successfully."}), 200
+
+
+# Route to handle PUT requests to update a specific post
+@app.route('/api/posts/<int:id>', methods=['PUT'])
+def update_post(id):
+    # Find the post with the given ID
+    post = find_post_by_id(id)
+
+    # If the book wasn't found, return a 404 error
+    if post is None:
+        return jsonify(
+            {"Error": f"Post with id {id} is not found in the data base. Please provide a valid post id"}), 404
+
+    new_data = request.get_json()
+
+    if 'title' in new_data:
+        post['title'] = new_data['title']
+    elif 'content' in new_data:
+        post['content'] = new_data['content']
+
+    return jsonify(POSTS)
 
 
 if __name__ == '__main__':
