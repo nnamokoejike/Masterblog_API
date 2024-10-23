@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "title": "The Importance of Good Sleep",
+        "content": "Quality sleep is essential for maintaining physical and mental health.",
+        "author": "Alice Smith",
+        "date": "2024-10-01"
+    },
+    {
+        "id": 2,
+        "title": "How to Stay Productive While Working From Home",
+        "content": "Remote work can be challenging, but with the right habits, you can stay productive.",
+        "author": "Bob Johnson",
+        "date": "2024-10-02"
+    }
+]

@@ -70,8 +70,13 @@ body {
 }
 
 .post p {
-    margin: 10px 0 0;
+    margin: 5px 0 0;
     color: #333;
+    font-weight: 400;
+}
+
+.post p strong {
+    font-weight: 700;
 }
 
 .post button {
